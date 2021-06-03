@@ -1,7 +1,8 @@
-import pytchat,discord,asyncio
+import pytchat,discord,asyncio,csv,os
 from modules import settings
 from logging import basicConfig, getLogger
 from pytchat import LiveChatAsync
+from os.path import join, dirname
 
 basicConfig(level=settings.LOG_LEVEL)
 LOG = getLogger(__name__)
@@ -35,8 +36,14 @@ async def func(chatdata):
             LOG.error(f'BOTに紐づくギルドは1件である必要があります。お手数ですが登録/削除をお願いします。あなたのBOTに紐づくギルドの数：{bot.guilds}')
             LOG.info('処理を終了します。')
             return
-        channel = guild.get_channel(settings.DISCORD_CHANNEL_ID)
-        await channel.send(youtube_chat_text)
+        if settings.DISCORD_CHANNEL_ID:
+            channel = guild.get_channel(settings.DISCORD_CHANNEL_ID)
+            await channel.send(youtube_chat_text)
+        if settings.CSV_OUTPUT_FLAG:
+            FILE_PATH = join(dirname(__file__), 'modules' + os.sep + 'files' + os.sep + 'csv' + os.sep + settings.VIDEO_ID + '.csv')
+            with open(FILE_PATH, 'a') as f:
+                writer = csv.writer(f)
+                writer.writerow([c.datetime, c.type, c.id, c.message, c.elapsedTime, c.amountString, c.currency, c.amountValue, c.author.name])
 
 @bot.event
 async def on_ready():
