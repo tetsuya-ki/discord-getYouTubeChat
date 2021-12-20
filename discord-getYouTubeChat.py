@@ -39,7 +39,7 @@ if __name__ == '__main__':
     intents.members = False
     intents.presences = False
 
-    bot = DiscordGetYoutubeChatBot(command_prefix='/', intents=intents)
+    bot = DiscordGetYoutubeChatBot(command_prefix='$', intents=intents)
 
     # start a server
     keep_alive.keep_alive()
